@@ -19,6 +19,44 @@
             </style>
         @endif
     </head>
+    <script>
+(function() {
+    let sessionId = localStorage.getItem("session_id");
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        localStorage.setItem("session_id", sessionId);
+    }
+
+    function sendEvent(event, metadata = {}) {
+        fetch("/api/track-event", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify({
+                session_id: sessionId,
+                event: event,
+                page: window.location.pathname,
+                metadata: metadata
+            })
+        });
+    }
+
+    // Track page view
+    sendEvent("page_view");
+
+    // Track product clicks
+    document.querySelectorAll(".product-card").forEach(card => {
+        card.addEventListener("click", function() {
+            sendEvent("product_click", {
+                product_id: card.dataset.productId
+            });
+        });
+    });
+})();
+</script>
+
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))

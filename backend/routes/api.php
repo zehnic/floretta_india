@@ -3,7 +3,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HowItWorksController;
+use App\Http\Controllers\SessionEventController;
 
+Route::post('/track-event', [SessionEventController::class, 'store']);
 Route::get('/how-it-works', [HowItWorksController::class, 'index']);
 
 Route::get('/homepage', [HomeController::class, 'index']);
